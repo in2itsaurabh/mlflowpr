@@ -1,0 +1,15 @@
+artifact_uri: file:///home/in2itadmin/Desktop/study/mlfloww/mlruns/0/d6265379fcb2452f869bca93133d34dc/artifacts
+end_time: 1717648148626
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: d6265379fcb2452f869bca93133d34dc
+run_name: masked-snipe-106
+run_uuid: d6265379fcb2452f869bca93133d34dc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1717648147486
+status: 3
+tags: []
+user_id: in2itadmin

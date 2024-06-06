@@ -11,7 +11,8 @@ from sklearn.linear_model import ElasticNet
 from urllib.parse import urlparse
 import mlflow
 import mlflow.sklearn
-
+import warnings
+warnings.filterwarnings("ignore")
 import logging
 
 os.environ['GIT_PYTHON_REFRESH'] = 'quiet'
