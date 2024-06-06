@@ -1,0 +1,15 @@
+artifact_uri: file:///home/in2itadmin/Desktop/study/mlfloww/mlruns/0/f8ef862ade3c4086a01f7e366798b1a5/artifacts
+end_time: 1717648864784
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: f8ef862ade3c4086a01f7e366798b1a5
+run_name: auspicious-fish-343
+run_uuid: f8ef862ade3c4086a01f7e366798b1a5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1717648864768
+status: 4
+tags: []
+user_id: in2itadmin

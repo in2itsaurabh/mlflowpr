@@ -74,6 +74,12 @@ if __name__ == "__main__":
         mlflow.log_metric("r2", r2)
         mlflow.log_metric("mae", mae)
 
+        import dagshub
+        dagshub.init(repo_owner='in2itsaurabh', repo_name='mlflowpr', mlflow=True)
+
+        import mlflow
+        mlflow.log_param('parameter name', 'value')
+        mlflow.log_metric('metric name', 1)
         tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
 
         # Model registry does not work with file store
