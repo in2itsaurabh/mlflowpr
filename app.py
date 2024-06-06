@@ -11,6 +11,8 @@ from sklearn.linear_model import ElasticNet
 from urllib.parse import urlparse
 import mlflow
 import mlflow.sklearn
+import dagshub
+dagshub.init(repo_owner='in2itsaurabh', repo_name='mlflowpr', mlflow=True)
 import warnings
 warnings.filterwarnings("ignore")
 import logging
@@ -74,8 +76,6 @@ if __name__ == "__main__":
         mlflow.log_metric("r2", r2)
         mlflow.log_metric("mae", mae)
 
-        import dagshub
-        dagshub.init(repo_owner='in2itsaurabh', repo_name='mlflowpr', mlflow=True)
 
         import mlflow
         mlflow.log_param('parameter name', 'value')
