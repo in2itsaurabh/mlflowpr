@@ -7,7 +7,6 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import ElasticNet
 from urllib.parse import urlparse
 import mlflow
 import mlflow.sklearn
@@ -16,7 +15,8 @@ from sklearn.preprocessing import StandardScaler,OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import SGDRegressor
-
+from kafka import KafkaConsumer
+import json
 
 dagshub.init(repo_owner='in2itsaurabh', repo_name='mlflowpr', mlflow=True)
 import warnings
