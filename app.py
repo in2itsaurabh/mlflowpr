@@ -11,14 +11,14 @@ from sklearn.linear_model import ElasticNet
 from urllib.parse import urlparse
 import mlflow
 import mlflow.sklearn
-# import dagshub
+import dagshub
 from sklearn.preprocessing import StandardScaler,OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import SGDRegressor
 
 
-# dagshub.init(repo_owner='in2itsaurabh', repo_name='mlflowpr', mlflow=True)
+dagshub.init(repo_owner='in2itsaurabh', repo_name='mlflowpr', mlflow=True)
 import warnings
 warnings.filterwarnings("ignore")
 import logging
@@ -91,8 +91,8 @@ if __name__ == "__main__":
 
 
         # import mlflow
-        # mlflow.log_param('parameter name', 'value')
-        # mlflow.log_metric('metric name', 1)
+        mlflow.log_param('parameter name', 'value')
+        mlflow.log_metric('metric name', 1)
         tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
 
         # Model registry does not work with file store
