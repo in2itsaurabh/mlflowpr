@@ -11,17 +11,24 @@ from sklearn.linear_model import ElasticNet
 from urllib.parse import urlparse
 import mlflow
 import mlflow.sklearn
-import dagshub
-dagshub.init(repo_owner='in2itsaurabh', repo_name='mlflowpr', mlflow=True)
+# import dagshub
+from sklearn.preprocessing import StandardScaler,OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import SGDRegressor
+
+
+# dagshub.init(repo_owner='in2itsaurabh', repo_name='mlflowpr', mlflow=True)
 import warnings
 warnings.filterwarnings("ignore")
 import logging
 
-os.environ['GIT_PYTHON_REFRESH'] = 'quiet'
-
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
 
+
+# Setting the environment variable GIT_PYTHON_REFRESH to 'quiet' is related to the behavior of the GitPython library, which is often used in environments where version control with Git is important. 
+os.environ['GIT_PYTHON_REFRESH'] = 'quiet'
 
 def eval_metrics(actual, pred):
     rmse = np.sqrt(mean_squared_error(actual, pred))
@@ -34,52 +41,58 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore")
     np.random.seed(40)
 
-    # Read the wine-quality csv file from the URL
-    csv_url = (
-        "http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
-    )
     try:
-        data = pd.read_csv(csv_url, sep=";")
+        df=pd.read_csv('Student_Performance.csv')
     except Exception as e:
         logger.exception(
             "Unable to download training & test CSV, check your internet connection. Error: %s", e
         )
 
+
+    encoder_feature=['Extracurricular_Activities']
+    scaler_feature=['hours', 'scores','Sleep_Hours','Sample_Papers_Practiced']
+
+    preproseccing=ColumnTransformer(
+        transformers=[
+            ('encoder',OneHotEncoder(),encoder_feature),
+        ('scaler',StandardScaler(),scaler_feature)
+        ])
+
+    x=df.drop('Performance',axis=1)
+    y=df['Performance']
+
     # Split the data into training and test sets. (0.75, 0.25) split.
-    train, test = train_test_split(data)
+    x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=42)
 
-    # The predicted column is "quality" which is a scalar from [3, 9]
-    train_x = train.drop(["quality"], axis=1)
-    test_x = test.drop(["quality"], axis=1)
-    train_y = train[["quality"]]
-    test_y = test[["quality"]]
 
-    alpha = float(sys.argv[1]) if len(sys.argv) > 1 else 0.5
-    l1_ratio = float(sys.argv[2]) if len(sys.argv) > 2 else 0.5
+    # alpha = float(sys.argv[1]) if len(sys.argv) > 1 else 0.5
+    penalty= sys.argv[1] if len(sys.argv) > 1 else "l2" #['l2', 'l1', 'elasticnet'] 
 
     with mlflow.start_run():
-        lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=42)
-        lr.fit(train_x, train_y)
+        model=Pipeline([
+            ('preproseccing',preproseccing),
+            ('lr',SGDRegressor())
+            ])
+        model.fit(x_train,y_train)
 
-        predicted_qualities = lr.predict(test_x)
+        predicted_qualities = model.predict(x_test)
 
-        (rmse, mae, r2) = eval_metrics(test_y, predicted_qualities)
+        (rmse, mae, r2) = eval_metrics(y_test, predicted_qualities)
 
-        print("Elasticnet model (alpha=%f, l1_ratio=%f):" % (alpha, l1_ratio))
+        print("  SGD Penality:", penalty)
         print("  RMSE: %s" % rmse)
         print("  MAE: %s" % mae)
         print("  R2: %s" % r2)
 
-        mlflow.log_param("alpha", alpha)
-        mlflow.log_param("l1_ratio", l1_ratio)
+        mlflow.log_param("penalty", penalty)
         mlflow.log_metric("rmse", rmse)
         mlflow.log_metric("r2", r2)
         mlflow.log_metric("mae", mae)
 
 
-        import mlflow
-        mlflow.log_param('parameter name', 'value')
-        mlflow.log_metric('metric name', 1)
+        # import mlflow
+        # mlflow.log_param('parameter name', 'value')
+        # mlflow.log_metric('metric name', 1)
         tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
 
         # Model registry does not work with file store
@@ -89,6 +102,6 @@ if __name__ == "__main__":
             # There are other ways to use the Model Registry, which depends on the use case,
             # please refer to the doc for more information:
             # https://mlflow.org/docs/latest/model-registry.html#api-workflow
-            mlflow.sklearn.log_model(lr, "model", registered_model_name="ElasticnetWineModel")
+            mlflow.sklearn.log_model(model, "model", registered_model_name="SGDRegressor")
         else:
-            mlflow.sklearn.log_model(lr, "model")
+            mlflow.sklearn.log_model(model, "model")
