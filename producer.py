@@ -21,7 +21,7 @@ try:
     for i in range(len(df)):
         l1=df.iloc[i:i+1].values[0].tolist()
         data=input_data(*l1)
-        producer.send('student-performance', data)
+        producer.send('student-details', data)
         producer.flush()  # Ensure all messages are sent before 
         print(f"Sent: {data}")
 except Exception as e:
