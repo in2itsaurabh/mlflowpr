@@ -1,13 +1,10 @@
 from kafka import KafkaConsumer
 import json
-from sklearn.linear_model import LinearRegression
 import numpy as np
 import pandas as pd
 from sklearn.metrics import r2_score
 from sklearn.preprocessing import StandardScaler,OneHotEncoder
 from sklearn.compose import ColumnTransformer
-
-from sklearn.pipeline import Pipeline
 from sklearn.linear_model import SGDRegressor
 # Initialize Kafka consumer
 consumer = KafkaConsumer('student-performance',
@@ -40,7 +37,7 @@ def preprocess_data(df, fit=False):
     return x_trans_df, y
 
 data_list=[]
-initial_batch_size = 5
+initial_batch_size = 100
 for _ in range(initial_batch_size):
     message = next(consumer)
     data = message.value
